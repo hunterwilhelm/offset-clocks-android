@@ -9,16 +9,15 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Phone"
+        android:text="@string/phone"
         android:textColor="@color/colorTextWhite" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="07:00:01 AM"
+        android:text="@string/time"
         android:textAlignment="center"
         android:textColor="@color/colorTextWhite"
-
-        android:textSize="50dp" />
+        android:textSize="50sp" />
 </LinearLayout>
