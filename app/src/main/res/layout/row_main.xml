@@ -5,7 +5,6 @@
     android:background="@drawable/row_main_background"
     android:orientation="vertical"
     android:animateLayoutChanges="true"
-
     android:padding="15dp">
 
     <TextView
@@ -13,7 +12,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/row_main_name"
         android:text="@string/phone"
-        android:textColor="@color/colorTextWhite"
+        android:textColor="@color/colorTextGrey"
         android:textStyle="bold" />
 
     <TextView
