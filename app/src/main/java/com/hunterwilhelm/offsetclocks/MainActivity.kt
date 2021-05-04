@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
+        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
             addClock()
         }
     }
