@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/row_main_background"
+    android:elevation="5dp"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <TextView
+        android:id="@+id/row_main_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/phone"
+        android:textColor="@color/colorTextWhite"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/row_main_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/time"
+        android:textAlignment="center"
+        android:textColor="@color/colorTextWhite"
+        android:textSize="50sp" />
+</LinearLayout>

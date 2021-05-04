@@ -11,5 +11,5 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="phone">Phone</string>
     <string name="time">07:00:01 AM</string>
-    <string name="hello">Hello</string>
+    <string name="clocks_title">Clocks</string>
 </resources>

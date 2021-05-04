@@ -5,10 +5,10 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-const val ADD_CLOCK = "com.hunterwilhelm.offsetclocks.ADD_CLOCK"
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,17 +22,27 @@ class MainActivity : AppCompatActivity() {
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
             addClock()
         }
+
+        val items = ArrayList<Model>()
+        items.add(Model("Phone", "07:00:00AM"))
+        items.add(Model("Paris", "08:00:00AM"))
+        items.add(Model("Seminary", "09:00:00AM"))
+        items.add(Model("Phone", "010:00:00AM"))
+        items.add(Model("Phone", "010:00:00AM"))
+        items.add(Model("Phone", "010:00:00AM"))
+        items.add(Model("Phone", "010:00:00AM"))
+        items.add(Model("Phone", "010:00:00AM"))
+        items.add(Model("Phone", "010:00:00AM"))
+        val listView = findViewById<NonScrollListView>(R.id.lv_nonscroll_list)
+        listView.adapter = MyCustomAdapter(this, R.layout.row_main, items)
     }
 
     fun addClock() {
-        val intent = Intent(this, EditActivity::class.java).apply {
-            putExtra(ADD_CLOCK, "new")
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Apply activity transition
 
-            startActivity(intent)
+            startActivity(Intent(this, EditActivity::class.java))
             overridePendingTransition(
                 R.anim.slide_in_right,
                 R.anim.nothing
