@@ -14,4 +14,10 @@
     <string name="clocks_title">Clocks</string>
     <string name="editActivityLabel">Sync Clock</string>
     <string name="edit_delete_title">Delete</string>
+    <string name="selected_seconds">Selected: Seconds</string>
+    <string name="adjust_the_clock">Adjust the clock</string>
+    <string name="fine_tune_seconds">Fine Tune Seconds:</string>
+    <string name="hour_label">H</string>
+    <string name="minute_label">M</string>
+    <string name="second_label">S</string>
 </resources>

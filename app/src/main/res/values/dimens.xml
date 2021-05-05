@@ -1,3 +1,7 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="edit_spacing">15dp</dimen>
+    <dimen name="increment_button_padding">10dp</dimen>
+    <dimen name="incremental_button_size">45dp</dimen>
+    <dimen name="incremental_play_button_size">70dp</dimen>
 </resources>

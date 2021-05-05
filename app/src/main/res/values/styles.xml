@@ -26,4 +26,13 @@
         <item name="android:background">@color/colorGrey200</item>
     </style>
 
+    <style name="Button.Primary" parent="ThemeOverlay.AppCompat">
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorTextBlack</item>
+    </style>
+
+    <style name="Button.Light" parent="ThemeOverlay.AppCompat">
+        <item name="backgroundTint">@color/colorGrey900</item>
+        <item name="android:textColor">@color/colorTextBlack</item>
+    </style>
 </resources>

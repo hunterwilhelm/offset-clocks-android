@@ -11,18 +11,150 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/edit_spacing"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:paddingTop="?attr/actionBarSize"
         android:paddingBottom="80dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:text="@string/clocks_title"
-            android:textColor="@color/colorTextWhite" />
+            android:gravity="center_horizontal"
+            android:text="@string/time"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextWhite"
+            android:textSize="50sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/edit_spacing"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/row_main_background"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/selected_seconds"
+                android:textColor="@color/colorTextGrey"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:text="@string/hour_label"
+                    android:theme="@style/Button.Light" />
+
+                <Button
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:text="@string/minute_label"
+                    android:theme="@style/Button.Light" />
+
+                <Button
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:text="@string/second_label"
+                    android:theme="@style/Button.Primary" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/edit_spacing"
+
+            android:animateLayoutChanges="true"
+            android:background="@drawable/row_main_background"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/adjust_the_clock"
+                android:textColor="@color/colorTextGrey"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="@dimen/incremental_button_size"
+                    android:layout_height="@dimen/incremental_button_size"
+                    android:layout_margin="@dimen/increment_button_padding"
+                    android:background="@drawable/increment_button_ripple"
+                    android:text="-15"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:layout_width="@dimen/incremental_button_size"
+                    android:layout_height="@dimen/incremental_button_size"
+                    android:layout_margin="@dimen/increment_button_padding"
+                    android:background="@drawable/increment_button_ripple"
+                    android:text="-1"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:layout_width="@dimen/incremental_play_button_size"
+                    android:layout_height="@dimen/incremental_play_button_size"
+                    android:layout_margin="@dimen/increment_button_padding"
+                    android:background="@drawable/ic_baseline_pause_circle_filled_24"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="15sp"/>
+                <Button
+                    android:layout_width="@dimen/incremental_button_size"
+                    android:layout_height="@dimen/incremental_button_size"
+                    android:layout_margin="@dimen/increment_button_padding"
+                    android:background="@drawable/increment_button_ripple"
+                    android:text="+1"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:layout_width="@dimen/incremental_button_size"
+                    android:layout_height="@dimen/incremental_button_size"
+                    android:layout_margin="@dimen/increment_button_padding"
+                    android:background="@drawable/increment_button_ripple"
+
+                    android:text="+15"
+                    android:textColor="@color/colorTextBlack"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="@dimen/edit_spacing"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/row_main_background"
+            android:orientation="vertical"
+            android:padding="15dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fine_tune_seconds"
+                android:textColor="@color/colorTextGrey"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
 
