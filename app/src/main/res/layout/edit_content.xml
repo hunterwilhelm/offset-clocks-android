@@ -116,7 +116,8 @@
                     android:layout_margin="@dimen/increment_button_padding"
                     android:background="@drawable/ic_baseline_pause_circle_filled_24"
                     android:textColor="@color/colorTextBlack"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp" />
+
                 <Button
                     android:layout_width="@dimen/incremental_button_size"
                     android:layout_height="@dimen/incremental_button_size"
@@ -154,6 +155,11 @@
                 android:text="@string/fine_tune_seconds"
                 android:textColor="@color/colorTextGrey"
                 android:textStyle="bold" />
+
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
