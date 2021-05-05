@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -33,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         items.add(Model("Phone", "010:00:00AM"))
         items.add(Model("Phone", "010:00:00AM"))
         items.add(Model("Phone", "010:00:00AM"))
-        val listView = findViewById<NonScrollListView>(R.id.lv_nonscroll_list)
+        val listView = findViewById<NonScrollListView>(R.id.nonscroll_list)
         listView.adapter = MyCustomAdapter(this, R.layout.row_main, items)
     }
 
