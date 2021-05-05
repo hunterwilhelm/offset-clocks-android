@@ -2,6 +2,7 @@ package com.hunterwilhelm.offsetclocks
 
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 
@@ -34,5 +35,12 @@ class EditActivity : AppCompatActivity() {
         } else {
             super.onOptionsItemSelected(item)
         }
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.edit_menu, menu)
+        return true
     }
 }

@@ -12,4 +12,6 @@
     <string name="phone">Phone</string>
     <string name="time">07:00:01 AM</string>
     <string name="clocks_title">Clocks</string>
+    <string name="editActivityLabel">Sync Clock</string>
+    <string name="edit_delete_title">Delete</string>
 </resources>

@@ -3,14 +3,16 @@
     package="com.hunterwilhelm.offsetclocks">
 
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".EditActivity"
-            android:parentActivityName=".MainActivity">
+            android:label="@string/editActivityLabel"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.YesActionBar"
+            >
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

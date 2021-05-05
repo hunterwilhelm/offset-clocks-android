@@ -11,6 +11,12 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+
+    <style name="AppTheme.YesActionBar">
+        <item name="colorPrimary">@color/colorGrey500</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:background">@color/colorGrey500</item>
         <item name="android:textColor">@color/colorTextWhite</item>
