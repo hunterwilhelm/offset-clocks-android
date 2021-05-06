@@ -2,25 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
     android:background="@drawable/row_main_background"
     android:orientation="vertical"
-    android:animateLayoutChanges="true"
     android:padding="15dp">
 
     <TextView
+        android:id="@+id/row_main_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/row_main_name"
-        android:text="@string/phone"
         android:textColor="@color/colorTextGrey"
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/row_main_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:id="@+id/row_main_time"
-        android:text="@string/time"
         android:textAlignment="center"
         android:textColor="@color/colorTextWhite"
         android:textSize="50sp" />

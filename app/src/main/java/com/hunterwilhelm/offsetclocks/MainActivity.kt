@@ -3,14 +3,23 @@ package com.hunterwilhelm.offsetclocks
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var myAdapter: MyCustomAdapter
+    private lateinit var mHandlerThread: HandlerThread
+    private lateinit var timerHandler: Handler
+    private lateinit var doUpdateTimeout: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,21 +33,35 @@ class MainActivity : AppCompatActivity() {
         }
 
         val items = ArrayList<Model>()
-        items.add(Model("Phone", "07:00:00AM"))
-        items.add(Model("Paris", "08:00:00AM"))
-        items.add(Model("Seminary", "09:00:00AM"))
-        items.add(Model("Phone", "010:00:00AM"))
-        items.add(Model("Phone", "010:00:00AM"))
-        items.add(Model("Phone", "010:00:00AM"))
-        items.add(Model("Phone", "010:00:00AM"))
-        items.add(Model("Phone", "010:00:00AM"))
-        items.add(Model("Phone", "010:00:00AM"))
+        items.add(Model("Actual", "010:00:00AM", 0))
+        items.add(Model("System", "010:00:00AM", 1000))
         val listView = findViewById<NonScrollListView>(R.id.nonscroll_list)
-        listView.adapter = MyCustomAdapter(this, R.layout.row_main, items)
+        this.myAdapter = MyCustomAdapter(this, R.layout.row_main, items)
+        listView.adapter = myAdapter
+
+
+        // setup for timer
+        this.doUpdateTimeout = Runnable { myAdapter.notifyDataSetChanged() }
+        mHandlerThread = HandlerThread("my-handler")
+        mHandlerThread.start()
+        timerHandler = Handler(mHandlerThread.looper)
+
+        val timer = Timer()
+        val tick = UpdateClass(myAdapter)
+
+        timer.scheduleAtFixedRate(tick, 0, 100)
     }
 
-    fun addClock() {
+    private class UpdateClass(var myCustomAdapter: MyCustomAdapter) : TimerTask() {
 
+        override fun run() {
+            myCustomAdapter.update()
+        }
+
+    }
+
+
+    fun addClock() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Apply activity transition
 
