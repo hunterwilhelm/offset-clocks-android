@@ -10,14 +10,17 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 
-enum class EditMode {
-    HOUR,
-    MINUTE,
-    SECOND
-}
-
 class EditActivity : AppCompatActivity() {
-    var editMode: EditMode = EditMode.SECOND
+
+
+
+
+    private fun visibleTransform(visible: Boolean): Int {
+        return if (visible) View.VISIBLE else View.GONE
+    }
+
+    private var editMode: EditMode = EditMode.SECOND
+    private var playMode: PlayMode = PlayMode.PLAY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +42,37 @@ class EditActivity : AppCompatActivity() {
             editMode = EditMode.SECOND
             notifyEditModeChanged()
         }
+        findViewById<Button>(R.id.edit_play_button).setOnClickListener {
+            playMode = PlayMode.PLAY
+            notifyPlayModeChanged()
+        }
+        findViewById<Button>(R.id.edit_pause_button).setOnClickListener {
+            playMode = PlayMode.PAUSE
+            notifyPlayModeChanged()
+        }
+    }
+
+    // play mode
+
+    enum class PlayMode {
+        PAUSE,
+        PLAY
+    }
+
+    private fun notifyPlayModeChanged() {
+        val playButton = findViewById<Button>(R.id.edit_play_button)
+        val pauseButton = findViewById<Button>(R.id.edit_pause_button)
+
+        playButton.visibility = visibleTransform(playMode != PlayMode.PLAY)
+        pauseButton.visibility = visibleTransform(playMode == PlayMode.PLAY)
+    }
+
+    // edit mode
+
+    enum class EditMode {
+        HOUR,
+        MINUTE,
+        SECOND
     }
 
     private fun notifyEditModeChanged() {
@@ -55,9 +89,6 @@ class EditActivity : AppCompatActivity() {
     }
 
     private fun updateButtons() {
-        fun visibleTransform(visible: Boolean): Int {
-            return if (visible) View.VISIBLE else View.GONE
-        }
 
         val editHourI = findViewById<Button>(R.id.edit_hour_button_inactive)
         val editHour = findViewById<Button>(R.id.edit_hour_button)
