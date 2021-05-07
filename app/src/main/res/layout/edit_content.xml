@@ -39,6 +39,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/edit_selected_mode_text"
                 android:text="@string/selected_seconds"
                 android:textColor="@color/colorTextGrey"
                 android:textStyle="bold" />
@@ -50,22 +51,49 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/edit_hour_button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:text="@string/hour_label"
+                    android:theme="@style/Button.Primary"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/edit_hour_button_inactive"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:text="@string/hour_label"
                     android:theme="@style/Button.Light" />
 
                 <Button
+                    android:id="@+id/edit_minute_button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:text="@string/minute_label"
+                    android:theme="@style/Button.Primary"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/edit_minute_button_inactive"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:text="@string/minute_label"
                     android:theme="@style/Button.Light" />
 
                 <Button
+                    android:id="@+id/edit_second_button"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:text="@string/second_label"
                     android:theme="@style/Button.Primary" />
+
+                <Button
+                    android:id="@+id/edit_second_button_inactive"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:text="@string/second_label"
+                    android:theme="@style/Button.Light"
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
 

@@ -15,6 +15,8 @@
     <string name="editActivityLabel">Sync Clock</string>
     <string name="edit_delete_title">Delete</string>
     <string name="selected_seconds">Selected: Seconds</string>
+    <string name="selected_minutes">Selected: Minutes</string>
+    <string name="selected_hours">Selected: Hours</string>
     <string name="adjust_the_clock">Adjust the clock</string>
     <string name="fine_tune_seconds">Fine Tune Seconds:</string>
     <string name="hour_label">H</string>
