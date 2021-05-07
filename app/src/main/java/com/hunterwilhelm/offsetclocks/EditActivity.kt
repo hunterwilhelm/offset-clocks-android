@@ -86,6 +86,14 @@ class EditActivity : AppCompatActivity() {
             EditMode.MINUTE -> resources.getString(R.string.selected_minutes)
             EditMode.HOUR -> resources.getString(R.string.selected_hours)
         }
+        findViewById<Button>(R.id.edit_rewind_coarse).text = when (editMode) {
+            EditMode.SECOND, EditMode.MINUTE -> resources.getString(R.string.minus_fifteen)
+            EditMode.HOUR -> resources.getString(R.string.minus_six)
+        }
+        findViewById<Button>(R.id.edit_skip_coarse).text = when (editMode) {
+            EditMode.SECOND, EditMode.MINUTE -> resources.getString(R.string.plus_fifteen)
+            EditMode.HOUR -> resources.getString(R.string.plus_six)
+        }
     }
 
     private fun updateButtons() {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorGrey200"
@@ -56,14 +57,16 @@
                     android:layout_height="50dp"
                     android:text="@string/hour_label"
                     android:theme="@style/Button.Primary"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
                     android:id="@+id/edit_hour_button_inactive"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:text="@string/hour_label"
-                    android:theme="@style/Button.Light" />
+                    android:theme="@style/Button.Light"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
                     android:id="@+id/edit_minute_button"
@@ -71,21 +74,24 @@
                     android:layout_height="50dp"
                     android:text="@string/minute_label"
                     android:theme="@style/Button.Primary"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
                     android:id="@+id/edit_minute_button_inactive"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:text="@string/minute_label"
-                    android:theme="@style/Button.Light" />
+                    android:theme="@style/Button.Light"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
                     android:id="@+id/edit_second_button"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:text="@string/second_label"
-                    android:theme="@style/Button.Primary" />
+                    android:theme="@style/Button.Primary"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
                     android:id="@+id/edit_second_button_inactive"
@@ -93,7 +99,8 @@
                     android:layout_height="50dp"
                     android:text="@string/second_label"
                     android:theme="@style/Button.Light"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:ignore="ButtonStyle" />
             </LinearLayout>
         </LinearLayout>
 
@@ -115,76 +122,86 @@
                 android:textStyle="bold" />
 
             <LinearLayout
-                android:layout_gravity="center"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:orientation="horizontal"
                 android:weightSum="5">
 
                 <Button
+                    android:id="@+id/edit_rewind_coarse"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="@dimen/incremental_button_size"
                     android:layout_margin="@dimen/increment_button_padding"
+                    android:layout_weight="1"
                     android:background="@drawable/increment_button_ripple"
-                    android:text="-15"
+                    android:text="@string/minus_fifteen"
                     android:textColor="@color/colorTextBlack"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
+                    android:id="@+id/edit_rewind_fine"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/incremental_button_size"
                     android:layout_margin="@dimen/increment_button_padding"
                     android:layout_weight="1"
                     android:background="@drawable/increment_button_ripple"
-                    android:text="-1"
+                    android:text="@string/minus_one"
                     android:textColor="@color/colorTextBlack"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
                     android:id="@+id/edit_pause_button"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/incremental_button_size"
                     android:layout_margin="@dimen/increment_button_padding"
-                    android:scaleX="1.5"
-                    android:scaleY="1.5"
                     android:layout_weight="1"
                     android:background="@drawable/ic_baseline_pause_circle_filled_24"
+                    android:scaleX="1.5"
+                    android:scaleY="1.5"
                     android:textColor="@color/colorTextBlack"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
                     android:id="@+id/edit_play_button"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/incremental_button_size"
                     android:layout_margin="@dimen/increment_button_padding"
-                    android:scaleX="1.5"
-                    android:scaleY="1.5"
-                    android:visibility="gone"
                     android:layout_weight="1"
                     android:background="@drawable/ic_baseline_play_circle_filled_24"
+                    android:scaleX="1.5"
+                    android:scaleY="1.5"
                     android:textColor="@color/colorTextBlack"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:visibility="gone"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
+                    android:id="@+id/edit_skip_fine"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/incremental_button_size"
                     android:layout_margin="@dimen/increment_button_padding"
                     android:layout_weight="1"
                     android:background="@drawable/increment_button_ripple"
-                    android:text="+1"
+                    android:text="@string/plus_one"
                     android:textColor="@color/colorTextBlack"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
+                    android:id="@+id/edit_skip_coarse"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/incremental_button_size"
                     android:layout_margin="@dimen/increment_button_padding"
                     android:layout_weight="1"
                     android:background="@drawable/increment_button_ripple"
-                    android:text="+15"
+                    android:text="@string/plus_fifteen"
                     android:textColor="@color/colorTextBlack"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    tools:ignore="ButtonStyle" />
             </LinearLayout>
         </LinearLayout>
 

@@ -22,4 +22,10 @@
     <string name="hour_label">H</string>
     <string name="minute_label">M</string>
     <string name="second_label">S</string>
+    <string name="minus_fifteen">-15</string>
+    <string name="minus_six">-6</string>
+    <string name="plus_fifteen">+15</string>
+    <string name="plus_six">+6</string>
+    <string name="minus_one">-1</string>
+    <string name="plus_one">+1</string>
 </resources>
