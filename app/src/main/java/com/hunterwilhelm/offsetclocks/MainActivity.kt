@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun addClock() {
+    private fun addClock() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Apply activity transition
 

@@ -18,7 +18,7 @@
     <string name="selected_minutes">Selected: Minutes</string>
     <string name="selected_hours">Selected: Hours</string>
     <string name="adjust_the_clock">Adjust the clock</string>
-    <string name="fine_tune_seconds">Fine Tune Seconds:</string>
+    <string name="fine_tune_seconds">Fine Tune Seconds</string>
     <string name="hour_label">H</string>
     <string name="minute_label">M</string>
     <string name="second_label">S</string>

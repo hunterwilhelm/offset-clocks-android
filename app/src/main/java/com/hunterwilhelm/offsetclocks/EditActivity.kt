@@ -2,10 +2,15 @@ package com.hunterwilhelm.offsetclocks
 
 import android.os.Build
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.text.SimpleDateFormat
@@ -19,6 +24,7 @@ class EditActivity : AppCompatActivity() {
     }
 
     private var currentDelay: Long = 0
+    private var superFineDelay: Long = 0
     private var editMode: EditMode = EditMode.SECOND
     private var playMode: PlayMode = PlayMode.PLAY
     private var pauseTime: Long = 0
@@ -28,7 +34,7 @@ class EditActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
-        registerButtons()
+        registerListeners()
         registerTimers()
     }
 
@@ -42,7 +48,7 @@ class EditActivity : AppCompatActivity() {
                 // performance improvement
                 if (currentDelayUpdatedFlag || self.playMode == PlayMode.PLAY) {
                     val currentTime = Calendar.getInstance().timeInMillis
-                    var clockTime = currentTime + self.currentDelay
+                    var clockTime = currentTime + self.currentDelay + self.superFineDelay
 
                     // pauses clock time when paused
                     if (self.playMode == PlayMode.PAUSE) {
@@ -60,7 +66,7 @@ class EditActivity : AppCompatActivity() {
         }, 0, 50)
     }
 
-    private fun registerButtons() {
+    private fun registerListeners() {
         findViewById<Button>(R.id.edit_hour_button_inactive).setOnClickListener {
             editMode = EditMode.HOUR
             notifyEditModeChanged()
@@ -105,6 +111,31 @@ class EditActivity : AppCompatActivity() {
             updateCurrentDelay(false, minus = false)
         }
 
+        findViewById<SeekBar>(R.id.edit_seek_bar).setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
+                superFineDelay = progress.toLong() - 1000
+                currentDelayUpdatedFlag = true
+
+                val prefix = resources.getString(R.string.fine_tune_seconds)
+                val seconds = "%.2f".format(superFineDelay / 1000F)
+                val spannable = SpannableString("$prefix: $seconds seconds")
+                spannable.setSpan(
+                    UnderlineSpan(),
+                    prefix.length + 2,
+                    spannable.length,
+                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+                findViewById<TextView>(R.id.edit_fine_tune_text).text = spannable
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+            }
+        })
+
 
     }
 
@@ -140,6 +171,7 @@ class EditActivity : AppCompatActivity() {
     private fun notifyEditModeChanged() {
         updateText()
         updateButtons()
+        updateBlocks()
     }
 
     private fun updateText() {
@@ -173,6 +205,11 @@ class EditActivity : AppCompatActivity() {
         editMinuteI.visibility = visibleTransform(editMode != EditMode.MINUTE)
         editSecond.visibility = visibleTransform(editMode == EditMode.SECOND)
         editSecondI.visibility = visibleTransform(editMode != EditMode.SECOND)
+    }
+
+    private fun updateBlocks() {
+        findViewById<LinearLayout>(R.id.edit_fine_tune_container).visibility =
+            visibleTransform(editMode == EditMode.SECOND)
     }
 
     override fun onBackPressed() {
