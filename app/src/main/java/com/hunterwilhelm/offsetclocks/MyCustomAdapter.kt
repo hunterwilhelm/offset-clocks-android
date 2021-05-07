@@ -9,14 +9,13 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class MyCustomAdapter(var ctx: Context, var resource: Int, var items: ArrayList<Model>) :
     ArrayAdapter<Model>(ctx, resource, items) {
 
 
-    private val formatter: SimpleDateFormat = SimpleDateFormat("hh:mm:ss", Locale.getDefault())
+    private val formatter: SimpleDateFormat = SimpleDateFormat("hh:mm:ss a", Locale.getDefault())
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val layoutInflater = LayoutInflater.from(ctx)
@@ -36,7 +35,7 @@ class MyCustomAdapter(var ctx: Context, var resource: Int, var items: ArrayList<
         val timeInMillis: Long = Calendar.getInstance().timeInMillis
         this.items.forEach {
             val time = Date(timeInMillis + it.delay)
-            it.CurrentTime =  formatter.format(time)
+            it.CurrentTime = formatter.format(time)
         }
         (ctx as Activity).runOnUiThread {
             notifyDataSetChanged()

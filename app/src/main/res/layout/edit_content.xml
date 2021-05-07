@@ -19,6 +19,7 @@
         android:paddingBottom="80dp">
 
         <TextView
+            android:id="@+id/edit_clock_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"

@@ -8,25 +8,56 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class EditActivity : AppCompatActivity() {
-
-
-
 
     private fun visibleTransform(visible: Boolean): Int {
         return if (visible) View.VISIBLE else View.GONE
     }
 
+    private var currentDelay: Long = 0
     private var editMode: EditMode = EditMode.SECOND
     private var playMode: PlayMode = PlayMode.PLAY
+    private var pauseTime: Long = 0
+    private var currentDelayUpdatedFlag: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
         registerButtons()
+        registerTimers()
+    }
+
+    private fun registerTimers() {
+        val self = this
+        val clockText = findViewById<TextView>(R.id.edit_clock_text)
+        val formatter = SimpleDateFormat("hh:mm:ss a", Locale.getDefault())
+        Timer().scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+
+                // performance improvement
+                if (currentDelayUpdatedFlag || self.playMode == PlayMode.PLAY) {
+                    val currentTime = Calendar.getInstance().timeInMillis
+                    var clockTime = currentTime + self.currentDelay
+
+                    // pauses clock time when paused
+                    if (self.playMode == PlayMode.PAUSE) {
+                        clockTime -= currentTime - pauseTime
+                    }
+
+                    val newTimeText = formatter.format(Date(clockTime))
+
+                    // this prevents the app from having to do a refresh unless the text is different
+                    if (clockText.text != newTimeText) {
+                        clockText.text = newTimeText
+                    }
+                }
+            }
+        }, 0, 50)
     }
 
     private fun registerButtons() {
@@ -42,6 +73,7 @@ class EditActivity : AppCompatActivity() {
             editMode = EditMode.SECOND
             notifyEditModeChanged()
         }
+
         findViewById<Button>(R.id.edit_play_button).setOnClickListener {
             playMode = PlayMode.PLAY
             notifyPlayModeChanged()
@@ -50,6 +82,30 @@ class EditActivity : AppCompatActivity() {
             playMode = PlayMode.PAUSE
             notifyPlayModeChanged()
         }
+
+        fun updateCurrentDelay(coarse: Boolean, minus: Boolean) {
+            currentDelay += when (editMode) {
+                EditMode.HOUR -> 3600000 * if (coarse) 6 else 1
+                EditMode.MINUTE -> 60000 * if (coarse) 15 else 1
+                EditMode.SECOND -> 1000 * if (coarse) 15 else 1
+            } * if (minus) -1 else 1
+            currentDelayUpdatedFlag = true
+        }
+
+        findViewById<Button>(R.id.edit_rewind_coarse).setOnClickListener {
+            updateCurrentDelay(true, minus = true)
+        }
+        findViewById<Button>(R.id.edit_skip_coarse).setOnClickListener {
+            updateCurrentDelay(true, minus = false)
+        }
+        findViewById<Button>(R.id.edit_rewind_fine).setOnClickListener {
+            updateCurrentDelay(false, minus = true)
+        }
+        findViewById<Button>(R.id.edit_skip_fine).setOnClickListener {
+            updateCurrentDelay(false, minus = false)
+        }
+
+
     }
 
     // play mode
@@ -65,6 +121,12 @@ class EditActivity : AppCompatActivity() {
 
         playButton.visibility = visibleTransform(playMode != PlayMode.PLAY)
         pauseButton.visibility = visibleTransform(playMode == PlayMode.PLAY)
+
+        if (playMode == PlayMode.PAUSE) {
+            pauseTime = Calendar.getInstance().timeInMillis
+        } else if (pauseTime != 0L) {
+            currentDelay -= Calendar.getInstance().timeInMillis - pauseTime
+        }
     }
 
     // edit mode
