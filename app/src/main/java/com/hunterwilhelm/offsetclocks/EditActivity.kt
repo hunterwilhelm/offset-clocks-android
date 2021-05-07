@@ -58,8 +58,20 @@ class EditActivity : AppCompatActivity() {
                     val newTimeText = formatter.format(Date(clockTime))
 
                     // this prevents the app from having to do a refresh unless the text is different
-                    if (clockText.text != newTimeText) {
-                        clockText.text = newTimeText
+                    if (currentDelayUpdatedFlag || clockText.text.toString() != newTimeText) {
+                        val (start, end) = when (editMode) {
+                            EditMode.HOUR -> Pair(0, 2)
+                            EditMode.MINUTE -> Pair(3, 5)
+                            EditMode.SECOND -> Pair(6, 8)
+                        }
+                        val spannable = SpannableString(newTimeText)
+                        spannable.setSpan(
+                            UnderlineSpan(),
+                            start,
+                            end,
+                            Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+                        )
+                        clockText.text = spannable
                     }
                 }
             }
@@ -169,6 +181,7 @@ class EditActivity : AppCompatActivity() {
     }
 
     private fun notifyEditModeChanged() {
+        currentDelayUpdatedFlag = true
         updateText()
         updateButtons()
         updateBlocks()

@@ -47,61 +47,89 @@
                 android:textStyle="bold" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:weightSum="3">
 
-                <Button
-                    android:id="@+id/edit_hour_button"
-                    android:layout_width="50dp"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="50dp"
-                    android:text="@string/hour_label"
-                    android:theme="@style/Button.Primary"
-                    android:visibility="gone"
-                    tools:ignore="ButtonStyle" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/edit_hour_button_inactive"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="@string/hour_label"
-                    android:theme="@style/Button.Light"
-                    tools:ignore="ButtonStyle" />
+                    <Button
+                        android:id="@+id/edit_hour_button"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:text="@string/hour_label"
+                        android:theme="@style/Button.Primary"
+                        android:visibility="gone"
+                        tools:ignore="ButtonStyle" />
 
-                <Button
-                    android:id="@+id/edit_minute_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="@string/minute_label"
-                    android:theme="@style/Button.Primary"
-                    android:visibility="gone"
-                    tools:ignore="ButtonStyle" />
+                    <Button
+                        android:id="@+id/edit_hour_button_inactive"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:text="@string/hour_label"
+                        android:theme="@style/Button.Light"
+                        tools:ignore="ButtonStyle" />
+                </LinearLayout>
 
-                <Button
-                    android:id="@+id/edit_minute_button_inactive"
-                    android:layout_width="50dp"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="50dp"
-                    android:text="@string/minute_label"
-                    android:theme="@style/Button.Light"
-                    tools:ignore="ButtonStyle" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/edit_second_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:text="@string/second_label"
-                    android:theme="@style/Button.Primary"
-                    tools:ignore="ButtonStyle" />
+                    <Button
+                        android:id="@+id/edit_minute_button"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:text="@string/minute_label"
+                        android:theme="@style/Button.Primary"
+                        android:visibility="gone"
+                        tools:ignore="ButtonStyle" />
 
-                <Button
-                    android:id="@+id/edit_second_button_inactive"
-                    android:layout_width="50dp"
+                    <Button
+                        android:id="@+id/edit_minute_button_inactive"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:text="@string/minute_label"
+                        android:theme="@style/Button.Light"
+                        tools:ignore="ButtonStyle" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="50dp"
-                    android:text="@string/second_label"
-                    android:theme="@style/Button.Light"
-                    android:visibility="gone"
-                    tools:ignore="ButtonStyle" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/edit_second_button"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:text="@string/second_label"
+                        android:theme="@style/Button.Primary"
+                        tools:ignore="ButtonStyle" />
+
+                    <Button
+                        android:id="@+id/edit_second_button_inactive"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:text="@string/second_label"
+                        android:theme="@style/Button.Light"
+                        android:visibility="gone"
+                        tools:ignore="ButtonStyle" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
@@ -232,4 +260,3 @@
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
-
