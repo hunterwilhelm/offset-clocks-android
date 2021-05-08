@@ -15,6 +15,7 @@ Features
 * Show the day below the time (in the settings)
 * Military / 24 hour time (in the settings)
 * Edit, rename, or delete existing clocks
+* Haptic feedback on edit screen to simulate clock ticking
 
 #### What problem is this trying to solve? 
 In school, I found it annoying that the school clocks were not always synced perfectly. Sometimes, the bell would ring 2 minutes earlier or later than what showed on my phone. **I wanted a way to keep track of the clocks and see them all at once.** That way, when I was getting ready for school, I could plan accordingly for how much time I needed until the bell rang. However, any app that I found would only let me change the time zone on a world clock.
