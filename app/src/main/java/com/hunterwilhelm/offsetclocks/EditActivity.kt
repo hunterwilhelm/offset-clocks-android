@@ -17,9 +17,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
+import com.hunterwilhelm.offsetclocks.Utils.Companion.getClocksFromStorage
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashSet
 
 
 class EditActivity : AppCompatActivity() {
@@ -37,14 +37,50 @@ class EditActivity : AppCompatActivity() {
     private var currentDelayUpdatedFlag: Boolean = false
     private lateinit var sharedViewModel: SharedViewModel
 
+    private var clockName: String? = null
+    private var clockIndex: Int? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
+        loadData()
         registerListeners()
         registerTimers()
         registerObservers()
 
+    }
+
+    private fun loadData() {
+        val bundle: Bundle? = intent.extras
+        if (bundle != null) {
+            try {
+                val name: String = bundle.get(IntentExtraConstants.CLOCK_NAME.name) as String
+                val index: Int = bundle.get(IntentExtraConstants.CLOCK_INDEX.name) as Int
+                val delay: Long = bundle.get(IntentExtraConstants.CLOCK_DELAY.name) as Long
+                val negative: Boolean =
+                    bundle.get(IntentExtraConstants.CLOCK_NEGATIVE.name) as Boolean
+
+
+                clockName = name
+                clockIndex = index
+                // preserve the original position of the seek bar
+                superFineDelay = delay % 1000 + if (negative) -1000 else 0
+                currentDelay = delay - superFineDelay
+                updateInfo()
+            } catch (e: TypeCastException) {
+                e.printStackTrace()
+            }
+        }
+
+    }
+
+    private fun updateInfo() {
+        findViewById<SeekBar>(R.id.edit_seek_bar).progress = (superFineDelay + 1000).toInt()
+        with(findViewById<TextView>(R.id.edit_clock_title)) {
+            text = clockName
+            visibility = visibleTransform(true)
+        }
     }
 
     private fun registerObservers() {
@@ -61,20 +97,15 @@ class EditActivity : AppCompatActivity() {
         })
     }
 
-    private fun storeClock(
-        sPref: SharedPreferences,
-        clockKey: String,
-        it: String
-    ) {
-        val hs: HashSet<String> =
-            sPref.getStringSet(clockKey, HashSet<String>()) as HashSet<String>
-        val clockJsonSet = HashSet<String>(hs)
-        val clock = ClockModel(it, "", currentDelay + superFineDelay, superFineDelay < 0)
-        val clockJson = Gson().toJson(clock)
+    private fun storeClock(sPref: SharedPreferences, clockKey: String, it: String) {
 
-        clockJsonSet.add(clockJson)
+        val clocks = getClocksFromStorage(sPref, clockKey)
+        val clock = ClockModel(it, "", currentDelay + superFineDelay, superFineDelay < 0)
+        clocks.add(clock)
+
+        val clocksJson = Gson().toJson(clocks)
         with(sPref.edit()) {
-            putStringSet(clockKey, clockJsonSet)
+            putString(clockKey, clocksJson)
             apply()
         }
     }

@@ -6,35 +6,33 @@ import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
 
 class MainActivity : AppCompatActivity() {
 
     private var fabButtonDisabled: Boolean = false
     private lateinit var myAdapter: MainClockListAdapter
-    private lateinit var sharedPreferences: SharedPreferences
-
+    private lateinit var sPrefs: SharedPreferences
+    private lateinit var listView: NonScrollListView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.main_toolbar)
         setSupportActionBar(toolbar)
 
-        val items = ArrayList<ClockModel>()
-        items.add(ClockModel("Your Phone's Time", "", 0, false))
-        val listView = findViewById<NonScrollListView>(R.id.nonscroll_list)
-        this.myAdapter = MainClockListAdapter(this, R.layout.row_main, items)
+        listView = findViewById<NonScrollListView>(R.id.nonscroll_list)
+        myAdapter = MainClockListAdapter(this, R.layout.row_main, ArrayList<ClockModel>())
         listView.adapter = myAdapter
 
-        sharedPreferences = applicationContext.getSharedPreferences(
+        sPrefs = applicationContext.getSharedPreferences(
             getString(R.string.preference_key_clock_storage),
             MODE_PRIVATE
         )
@@ -55,44 +53,47 @@ class MainActivity : AppCompatActivity() {
     private fun registerListeners() {
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
             fabButtonDisabled = true
-            addClock()
+            editClock(null, null)
+        }
+        listView.setOnItemClickListener { _: AdapterView<*>, _: View, i: Int, _: Long ->
+            editClock(myAdapter.getItem(i), i)
         }
     }
 
     private fun loadData() {
-        val clockKey = getString(R.string.preference_key_clocks)
-
-        val hs: HashSet<String> =
-            sharedPreferences.getStringSet(clockKey, HashSet()) as HashSet<String>
-        myAdapter.clear()
         val gson = Gson()
-        if (hs.count() == 0) {
-            val clock = ClockModel("Your Phone's Time", "", 0, false)
+        val clockKey = getString(R.string.preference_key_clocks)
+        val clocks = Utils.getClocksFromStorage(sPrefs, clockKey)
+
+        myAdapter.clear()
+        if (clocks.count() == 0) {
+            val clock = ClockModel(getString(R.string.defualt_clock_name), "", 0, false)
             myAdapter.add(clock)
-            with(sharedPreferences.edit()) {
-                val set = HashSet<String>()
-                set.add(gson.toJson(clock))
-                putStringSet(clockKey, set)
+
+            val clocksJson = gson.toJson(myAdapter.items)
+            with(sPrefs.edit()) {
+                putString(clockKey, clocksJson)
                 apply()
             }
         } else {
-            hs.forEach {
-                try {
-                    val clock = gson.fromJson(it, ClockModel::class.java)
-                    myAdapter.add(clock)
-                } catch (e: JsonSyntaxException) {
-                    e.printStackTrace()
-                }
+            clocks.forEach {
+                myAdapter.add(it)
             }
         }
         myAdapter.notifyDataSetChanged()
     }
 
-    private fun addClock() {
+    private fun editClock(clock: ClockModel?, index: Int?) {
+        val intent = Intent(this, EditActivity::class.java)
+        if (clock != null && index != null) {
+            intent.putExtra(IntentExtraConstants.CLOCK_DELAY.name, clock.delay)
+            intent.putExtra(IntentExtraConstants.CLOCK_INDEX.name, index)
+            intent.putExtra(IntentExtraConstants.CLOCK_NAME.name, clock.Name)
+            intent.putExtra(IntentExtraConstants.CLOCK_NEGATIVE.name, clock.isSeekBarNegative)
+        }
+        startActivity(intent)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // Apply activity transition
-
-            startActivity(Intent(this, EditActivity::class.java))
             overridePendingTransition(
                 R.anim.slide_in_right,
                 R.anim.nothing

@@ -34,7 +34,7 @@ class MainClockListAdapter(var ctx: Context, var resource: Int, var items: Array
     fun update() {
         val timeInMillis: Long = Calendar.getInstance().timeInMillis
         var needToNotifyFlag = false
-        this.items.forEach {
+        items.forEach {
             val timeStr = formatter.format(Date(timeInMillis + it.delay))
             if (timeStr != it.CurrentTime) {
                 it.CurrentTime = timeStr

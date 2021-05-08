@@ -32,4 +32,5 @@
     <string name="preference_key_clock_storage">clock_storage</string>
     <string name="preference_key_clocks">clocks</string>
     <string name="save">Save</string>
+    <string name="defualt_clock_name">Your Phone\'s Time</string>
 </resources>

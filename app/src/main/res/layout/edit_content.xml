@@ -19,6 +19,17 @@
         android:paddingBottom="80dp">
 
         <TextView
+            android:id="@+id/edit_clock_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/time"
+            android:visibility="gone"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextWhite"
+            android:textSize="20sp" />
+
+        <TextView
             android:id="@+id/edit_clock_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
