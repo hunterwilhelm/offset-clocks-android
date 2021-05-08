@@ -7,12 +7,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.edit_dialog.view.*
 import java.util.*
 
 
-class EditDialog : DialogFragment() {
-
+class EditDialog(clockName: String?) : DialogFragment() {
+    private val clockName = clockName
 
     companion object {
 
@@ -32,9 +33,16 @@ class EditDialog : DialogFragment() {
         return inflater.inflate(R.layout.edit_dialog, container, false)
     }
 
+
+    private fun setupView(view: View) {
+        clockName ?: return
+        view.findViewById<TextInputEditText>(R.id.edit_dialog_edit_text).setText(clockName)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        editText = view.findViewById(R.id.etName)
+        setupView(view)
+        editText = view.findViewById(R.id.edit_dialog_edit_text)
         viewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         setupClickListeners(view)
         editText.requestFocus()
@@ -70,7 +78,7 @@ class EditDialog : DialogFragment() {
 
     private fun setupClickListeners(view: View) {
         view.btnSubmit.setOnClickListener {
-            viewModel.sendName(view.etName.text.toString())
+            viewModel.sendName(view.edit_dialog_edit_text.text.toString())
             dismiss()
         }
     }

@@ -21,7 +21,7 @@
             android:textSize="@dimen/font_size_16">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etName"
+                android:id="@+id/edit_dialog_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no" />

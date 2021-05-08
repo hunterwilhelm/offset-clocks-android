@@ -152,7 +152,8 @@ class EditActivity : AppCompatActivity() {
 
         findViewById<FloatingActionButton>(R.id.edit_fab).setOnClickListener {
             fabButtonDisabled = true
-            EditDialog().show(supportFragmentManager, EditDialog.TAG)
+//            EditDialog.newInstance(clockName).show(supportFragmentManager, EditDialog.TAG)
+            EditDialog(clockName).show(supportFragmentManager, EditDialog.TAG)
         }
     }
 

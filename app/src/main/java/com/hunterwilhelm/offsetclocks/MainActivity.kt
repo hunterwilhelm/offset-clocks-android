@@ -67,8 +67,8 @@ class MainActivity : AppCompatActivity() {
 
         myAdapter.clear()
         if (clocks.count() == 0) {
-            val clock = ClockModel(getString(R.string.defualt_clock_name), "", 0, false)
-            myAdapter.add(clock)
+            val defaultClock = ClockModel(getString(R.string.defualt_clock_name), "", 0, false)
+            myAdapter.add(defaultClock)
 
             val clocksJson = gson.toJson(myAdapter.items)
             with(sPrefs.edit()) {
