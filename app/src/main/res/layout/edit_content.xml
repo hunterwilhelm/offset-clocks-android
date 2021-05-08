@@ -18,16 +18,29 @@
         android:orientation="vertical"
         android:paddingBottom="80dp">
 
-        <TextView
-            android:id="@+id/edit_clock_title"
+        <LinearLayout
+            android:id="@+id/edit_clock_title_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/time"
-            android:visibility="gone"
-            android:textAlignment="center"
-            android:textColor="@color/colorTextWhite"
-            android:textSize="20sp" />
+            android:layout_marginLeft="@dimen/dimen_48"
+            android:layout_marginRight="@dimen/dimen_48"
+            android:layout_marginBottom="@dimen/edit_spacing"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/row_main_background_light"
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/edit_clock_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/phone"
+                android:textAlignment="center"
+                android:textColor="@color/colorTextBlack"
+                android:textSize="20sp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/edit_clock_text"

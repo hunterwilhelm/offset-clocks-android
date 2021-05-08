@@ -1,7 +1,6 @@
 package com.hunterwilhelm.offsetclocks
 
 import android.content.SharedPreferences
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
@@ -21,8 +20,19 @@ class Utils {
                     e.printStackTrace()
                 }
             }
-            Log.d("COUNTDEBUG", clocks.count().toString())
             return clocks
+        }
+
+        fun putClocksIntoStorage(
+            sPref: SharedPreferences,
+            key: String,
+            clocks: ArrayList<ClockModel>
+        ) {
+            val clocksJson = Gson().toJson(clocks)
+            with(sPref.edit()) {
+                putString(key, clocksJson)
+                apply()
+            }
         }
     }
 }

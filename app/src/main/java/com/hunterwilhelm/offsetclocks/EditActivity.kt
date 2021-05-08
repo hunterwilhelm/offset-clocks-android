@@ -16,8 +16,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.gson.Gson
-import com.hunterwilhelm.offsetclocks.Utils.Companion.getClocksFromStorage
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,15 +38,29 @@ class EditActivity : AppCompatActivity() {
     private var clockName: String? = null
     private var clockIndex: Int? = null
 
+
+    private lateinit var sPrefs: SharedPreferences
+    private lateinit var clockKey: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
+        loadVariables()
         loadData()
         registerListeners()
         registerTimers()
         registerObservers()
 
+    }
+
+    private fun loadVariables() {
+        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        sPrefs = applicationContext.getSharedPreferences(
+            getString(R.string.preference_key_clock_storage),
+            MODE_PRIVATE
+        )
+        clockKey = getString(R.string.preference_key_clocks)
     }
 
     private fun loadData() {
@@ -60,7 +72,6 @@ class EditActivity : AppCompatActivity() {
                 val delay: Long = bundle.get(IntentExtraConstants.CLOCK_DELAY.name) as Long
                 val negative: Boolean =
                     bundle.get(IntentExtraConstants.CLOCK_NEGATIVE.name) as Boolean
-
 
                 clockName = name
                 clockIndex = index
@@ -77,37 +88,37 @@ class EditActivity : AppCompatActivity() {
 
     private fun updateInfo() {
         findViewById<SeekBar>(R.id.edit_seek_bar).progress = (superFineDelay + 1000).toInt()
-        with(findViewById<TextView>(R.id.edit_clock_title)) {
-            text = clockName
-            visibility = visibleTransform(true)
-        }
+        findViewById<TextView>(R.id.edit_clock_title).text = clockName
+        findViewById<LinearLayout>(R.id.edit_clock_title_container).visibility =
+            visibleTransform(true)
     }
 
     private fun registerObservers() {
-        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-        val sPref = applicationContext.getSharedPreferences(
-            getString(R.string.preference_key_clock_storage),
-            MODE_PRIVATE
-        )
-        val clockKey = getString(R.string.preference_key_clocks)
-
         sharedViewModel.name.observe(this, {
-            storeClock(sPref, clockKey, it)
+            storeClock(it)
             onBackPressed()
         })
     }
 
-    private fun storeClock(sPref: SharedPreferences, clockKey: String, it: String) {
-
-        val clocks = getClocksFromStorage(sPref, clockKey)
+    private fun storeClock(it: String) {
+        val clocks = Utils.getClocksFromStorage(sPrefs, clockKey)
         val clock = ClockModel(it, "", currentDelay + superFineDelay, superFineDelay < 0)
-        clocks.add(clock)
-
-        val clocksJson = Gson().toJson(clocks)
-        with(sPref.edit()) {
-            putString(clockKey, clocksJson)
-            apply()
+        val i = clockIndex
+        if (i != null) {
+            clocks[i] = clock
+        } else {
+            clocks.add(clock)
         }
+        Utils.putClocksIntoStorage(sPrefs, clockKey, clocks)
+    }
+
+    private fun deleteClock() {
+        val i: Int = clockIndex ?: return
+        val clocks = Utils.getClocksFromStorage(sPrefs, clockKey)
+        if (i < clocks.count()) {
+            clocks.removeAt(i)
+        }
+        Utils.putClocksIntoStorage(sPrefs, clockKey, clocks)
     }
 
     private fun registerTimers() {
@@ -152,7 +163,6 @@ class EditActivity : AppCompatActivity() {
 
         findViewById<FloatingActionButton>(R.id.edit_fab).setOnClickListener {
             fabButtonDisabled = true
-//            EditDialog.newInstance(clockName).show(supportFragmentManager, EditDialog.TAG)
             EditDialog(clockName).show(supportFragmentManager, EditDialog.TAG)
         }
     }
@@ -327,13 +337,20 @@ class EditActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id: Int = item.itemId
-        // click on icon to go back
-        //triangle icon on the main android toolbar.
-        return if (id == android.R.id.home) {
-            onBackPressed()
-            true
-        } else {
-            super.onOptionsItemSelected(item)
+
+        return when (id) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            R.id.edit_delete -> {
+                deleteClock()
+                onBackPressed()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
     }
 

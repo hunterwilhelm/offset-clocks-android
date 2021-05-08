@@ -14,10 +14,10 @@ class NonScrollListView : ListView {
     )
 
     public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val heightMeasureSpec_custom = MeasureSpec.makeMeasureSpec(
+        val heightMeasureSpecCustom = MeasureSpec.makeMeasureSpec(
             Int.MAX_VALUE shr 2, MeasureSpec.AT_MOST
         )
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec_custom)
+        super.onMeasure(widthMeasureSpec, heightMeasureSpecCustom)
         val params = layoutParams
         params.height = measuredHeight
     }

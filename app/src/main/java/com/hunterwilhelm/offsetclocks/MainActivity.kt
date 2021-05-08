@@ -11,14 +11,13 @@ import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.gson.Gson
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
 
-    private var fabButtonDisabled: Boolean = false
+    private var disableButtons: Boolean = false
     private lateinit var myAdapter: MainClockListAdapter
     private lateinit var sPrefs: SharedPreferences
     private lateinit var listView: NonScrollListView
@@ -52,33 +51,28 @@ class MainActivity : AppCompatActivity() {
 
     private fun registerListeners() {
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
-            fabButtonDisabled = true
-            editClock(null, null)
+            if (!disableButtons) {
+                editClock(null, null)
+            }
+            disableButtons = true
         }
         listView.setOnItemClickListener { _: AdapterView<*>, _: View, i: Int, _: Long ->
-            editClock(myAdapter.getItem(i), i)
+            if (!disableButtons) {
+                editClock(myAdapter.getItem(i), i)
+            }
+            disableButtons = true
         }
     }
 
     private fun loadData() {
-        val gson = Gson()
         val clockKey = getString(R.string.preference_key_clocks)
-        val clocks = Utils.getClocksFromStorage(sPrefs, clockKey)
-
         myAdapter.clear()
-        if (clocks.count() == 0) {
+        myAdapter.addAll(Utils.getClocksFromStorage(sPrefs, clockKey))
+        if (myAdapter.items.count() == 0) {
             val defaultClock = ClockModel(getString(R.string.defualt_clock_name), "", 0, false)
             myAdapter.add(defaultClock)
-
-            val clocksJson = gson.toJson(myAdapter.items)
-            with(sPrefs.edit()) {
-                putString(clockKey, clocksJson)
-                apply()
-            }
-        } else {
-            clocks.forEach {
-                myAdapter.add(it)
-            }
+            // we only need to update the storage when we have added something
+            Utils.putClocksIntoStorage(sPrefs, clockKey, myAdapter.items)
         }
         myAdapter.notifyDataSetChanged()
     }
@@ -104,7 +98,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         loadData()
-        fabButtonDisabled = false
+        disableButtons = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
