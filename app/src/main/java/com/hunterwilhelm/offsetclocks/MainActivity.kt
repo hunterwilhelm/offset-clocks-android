@@ -19,7 +19,7 @@ import kotlin.collections.HashSet
 class MainActivity : AppCompatActivity() {
 
     private var fabButtonDisabled: Boolean = false
-    private lateinit var myAdapter: MyCustomAdapter
+    private lateinit var myAdapter: MainClockListAdapter
     private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         val items = ArrayList<ClockModel>()
         items.add(ClockModel("Your Phone's Time", "", 0, false))
         val listView = findViewById<NonScrollListView>(R.id.nonscroll_list)
-        this.myAdapter = MyCustomAdapter(this, R.layout.row_main, items)
+        this.myAdapter = MainClockListAdapter(this, R.layout.row_main, items)
         listView.adapter = myAdapter
 
         sharedPreferences = applicationContext.getSharedPreferences(
@@ -57,12 +57,6 @@ class MainActivity : AppCompatActivity() {
             fabButtonDisabled = true
             addClock()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        loadData()
-        fabButtonDisabled = false
     }
 
     private fun loadData() {
@@ -104,6 +98,12 @@ class MainActivity : AppCompatActivity() {
                 R.anim.nothing
             )
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadData()
+        fabButtonDisabled = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

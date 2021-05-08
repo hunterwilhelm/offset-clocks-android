@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MyCustomAdapter(var ctx: Context, var resource: Int, var items: ArrayList<ClockModel>) :
+class MainClockListAdapter(var ctx: Context, var resource: Int, var items: ArrayList<ClockModel>) :
     ArrayAdapter<ClockModel>(ctx, resource, items) {
 
 
