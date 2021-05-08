@@ -1,5 +1,6 @@
 package com.hunterwilhelm.offsetclocks
 
+// Constant keys for communication between activities
 enum class IntentExtraConstants(s: String) {
     CLOCK_NAME("com.hunterwilhelm.offsetclocks.CLOCK_NAME"),
     CLOCK_DELAY("com.hunterwilhelm.offsetclocks.CLOCK_DELAY"),

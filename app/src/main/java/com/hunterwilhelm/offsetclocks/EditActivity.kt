@@ -11,7 +11,6 @@ import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.SeekBar
@@ -20,31 +19,31 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.hunterwilhelm.offsetclocks.Utils.Companion.visibleTransform
 import java.text.SimpleDateFormat
 import java.util.*
 
+// Screen where you can edit or create clocks
 
 class EditActivity : AppCompatActivity() {
 
-    private fun visibleTransform(visible: Boolean): Int {
-        return if (visible) View.VISIBLE else View.GONE
-    }
-
+    // UI
     private var setting24HourTime: Boolean = false
-    private lateinit var timerTask: TimerTask
     private var fabButtonDisabled: Boolean = false
-    private var currentDelay: Long = 0
-    private var superFineDelay: Long = 0
     private var editMode: EditMode = EditMode.SECOND
     private var playMode: PlayMode = PlayMode.PLAY
-    private var pauseTime: Long = 0
     private var currentDelayUpdatedFlag: Boolean = false
-    private lateinit var sharedViewModel: SharedViewModel
 
+    // clock data
+    private var pauseTime: Long = 0
+    private var currentDelay: Long = 0
+    private var superFineDelay: Long = 0
     private var clockName: String? = null
     private var clockIndex: Int? = null
 
-
+    // helpers
+    private lateinit var timerTask: TimerTask
+    private lateinit var sharedViewModel: SharedViewModel
     private lateinit var sPrefs: SharedPreferences
     private lateinit var clockKey: String
 
@@ -54,13 +53,14 @@ class EditActivity : AppCompatActivity() {
 
         loadVariables()
         loadData()
-        registerListeners()
+        registerButtonListeners()
         registerTimers()
         registerObservers()
 
     }
 
     override fun onDestroy() {
+        // timers can get duplicated without this
         timerTask.cancel()
         super.onDestroy()
     }
@@ -74,6 +74,9 @@ class EditActivity : AppCompatActivity() {
         clockKey = getString(R.string.preference_key_clocks)
     }
 
+    /*
+    load data the main activity
+     */
     private fun loadData() {
         val bundle: Bundle? = intent.extras
         if (bundle != null) {
@@ -94,7 +97,9 @@ class EditActivity : AppCompatActivity() {
         }
 
     }
-
+    /*
+    After the information is loaded, the UI needs to be updated
+     */
     private fun updateInfo() {
         val progress = (superFineDelay / 10 + 100).toInt()
         findViewById<SeekBar>(R.id.edit_seek_bar).progress = progress
@@ -105,6 +110,9 @@ class EditActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.edit_fine_tune_text).text = spannable
     }
 
+    /*
+    This is the receiver for the information that comes from the dialog
+     */
     private fun registerObservers() {
         sharedViewModel.name.observe(this, Observer<String> {
             storeClock(it)
@@ -133,6 +141,9 @@ class EditActivity : AppCompatActivity() {
         Utils.putClocksIntoStorage(sPrefs, clockKey, clocks)
     }
 
+    /*
+    make the clocks come to life
+     */
     private fun registerTimers() {
         val self = this
         val clockText = findViewById<TextView>(R.id.edit_clock_text)
@@ -198,7 +209,7 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
-    private fun registerListeners() {
+    private fun registerButtonListeners() {
         findViewById<Button>(R.id.edit_hour_button_inactive).setOnClickListener {
             editMode = EditMode.HOUR
             notifyEditModeChanged()
@@ -264,6 +275,10 @@ class EditActivity : AppCompatActivity() {
 
     }
 
+    /*
+    Above the seekbar, there is a spannable that shows what the current value is
+    This formats the string/spannable for that label
+     */
     private fun getSpannableSeekLabel(progress: Int): SpannableString {
         superFineDelay = (progress.toLong() - 100) * 10
         currentDelayUpdatedFlag = true
@@ -279,8 +294,6 @@ class EditActivity : AppCompatActivity() {
         )
         return spannable
     }
-
-// play mode
 
     enum class PlayMode {
         PAUSE,
@@ -300,8 +313,6 @@ class EditActivity : AppCompatActivity() {
             currentDelay -= Calendar.getInstance().timeInMillis - pauseTime
         }
     }
-
-// edit mode
 
     enum class EditMode {
         HOUR,
@@ -349,11 +360,17 @@ class EditActivity : AppCompatActivity() {
         editSecondI.visibility = visibleTransform(editMode != EditMode.SECOND)
     }
 
+    /*
+    Some blocks need to be shown in different edit modes
+     */
     private fun updateBlocks() {
         findViewById<LinearLayout>(R.id.edit_fine_tune_container).visibility =
             visibleTransform(editMode == EditMode.SECOND)
     }
 
+    /*
+    Prevents double buttons
+     */
     override fun onResume() {
         super.onResume()
         fabButtonDisabled = false
@@ -371,15 +388,20 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
+    /*
+    add functionality to the menu
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id: Int = item.itemId
 
         return when (id) {
             android.R.id.home -> {
+                // this is the top left arrow
                 onBackPressed()
                 true
             }
             R.id.edit_delete -> {
+                // this is the trash can
                 deleteClock()
                 onBackPressed()
                 true

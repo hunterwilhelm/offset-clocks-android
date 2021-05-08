@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.ListView
 
+// There seems not to be a non scrollable list view, so to take advantages of the
+// built in features of list view, I 'made' my own. Eh hem... *copied*
 class NonScrollListView : ListView {
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)

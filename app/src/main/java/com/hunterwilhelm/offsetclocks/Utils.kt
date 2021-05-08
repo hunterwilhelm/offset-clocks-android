@@ -1,6 +1,7 @@
 package com.hunterwilhelm.offsetclocks
 
 import android.content.SharedPreferences
+import android.view.View
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
@@ -51,6 +52,14 @@ class Utils {
                 putBoolean(key, value)
                 apply()
             }
+        }
+
+        /*
+        I got tired of writing the same ternary operator,
+        so I turned it into an Util
+         */
+        fun visibleTransform(visible: Boolean): Int {
+            return if (visible) View.VISIBLE else View.GONE
         }
     }
 }

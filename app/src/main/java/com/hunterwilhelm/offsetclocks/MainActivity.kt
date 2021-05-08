@@ -10,22 +10,24 @@ import android.view.View
 import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 import kotlin.collections.ArrayList
 
+// This is the home page where you can monitor your clocks
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var timerTask: TimerTask
-    private var disableButtons: Boolean = false
-    private lateinit var myAdapter: MainClockListAdapter
-    private lateinit var sPrefs: SharedPreferences
-    private lateinit var listView: NonScrollListView
 
+    // UI
     private var setting24Hour: Boolean = false
     private var settingShowDay: Boolean = false
-    private lateinit var viewModel: SharedViewModel
+    private var disableButtons: Boolean = false
+
+    // helpers
+    private lateinit var listView: NonScrollListView
+    private lateinit var timerTask: TimerTask
+    private lateinit var myAdapter: MainClockListAdapter
+    private lateinit var sPrefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,21 +35,25 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.main_toolbar)
         setSupportActionBar(toolbar)
 
+        loadVariables()
+        registerTimers()
+        registerButtonListeners()
+    }
+
+    private fun loadVariables() {
         listView = findViewById<NonScrollListView>(R.id.nonscroll_list)
         myAdapter = MainClockListAdapter(this, R.layout.row_main, ArrayList<ClockModel>())
         listView.adapter = myAdapter
 
-        viewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         sPrefs = applicationContext.getSharedPreferences(
             getString(R.string.preference_key_clock_storage),
             MODE_PRIVATE
         )
-
-        // setup for timer
-        registerTimers()
-        registerListeners()
     }
 
+    /*
+    make the clocks come to life
+     */
     private fun registerTimers() {
         timerTask = object : TimerTask() {
             override fun run() {
@@ -61,21 +67,25 @@ class MainActivity : AppCompatActivity() {
         Timer().scheduleAtFixedRate(timerTask, 0, 50)
     }
 
-    private fun registerListeners() {
+    private fun registerButtonListeners() {
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
             if (!disableButtons) {
-                editClock(null, null)
+                launchEditActivity(null, null)
             }
             disableButtons = true
         }
         listView.setOnItemClickListener { _: AdapterView<*>, _: View, i: Int, _: Long ->
             if (!disableButtons) {
-                editClock(myAdapter.getItem(i), i)
+                launchEditActivity(myAdapter.getItem(i), i)
             }
             disableButtons = true
         }
     }
 
+    /*
+    Data is stored in SharedPreferences. You can restart the app and it will still be there
+    To reset the data, clear data or uninstall and reinstall
+     */
     private fun loadData() {
         val clockKey = getString(R.string.preference_key_clocks)
         myAdapter.clear()
@@ -93,10 +103,9 @@ class MainActivity : AppCompatActivity() {
         settingShowDay =
             Utils.getBooleanPreference(sPrefs, getString(R.string.preference_key_setting_show_day))
         myAdapter.updateSettings(setting24Hour, settingShowDay)
-        viewModel.sendShowDayPreference(settingShowDay)
     }
 
-    private fun editClock(clock: ClockModel?, index: Int?) {
+    private fun launchEditActivity(clock: ClockModel?, index: Int?) {
         val intent = Intent(this, EditActivity::class.java)
         if (clock != null && index != null) {
             intent.putExtra(IntentExtraConstants.CLOCK_DELAY.name, clock.delay)
@@ -114,6 +123,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /*
+    avoid double clicking on buttons
+     */
     override fun onResume() {
         super.onResume()
         loadData()
@@ -121,6 +133,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        // timers can get duplicated without this
         timerTask.cancel()
         super.onDestroy()
     }
@@ -133,6 +146,9 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    /*
+    add functionality to the menu
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long

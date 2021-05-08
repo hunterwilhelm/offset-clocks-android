@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import com.hunterwilhelm.offsetclocks.Utils.Companion.visibleTransform
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+// This adapter manages the list of clocks and updates the UI through it
 class MainClockListAdapter(var ctx: Context, var resource: Int, var items: ArrayList<ClockModel>) :
     ArrayAdapter<ClockModel>(ctx, resource, items) {
 
@@ -34,10 +35,8 @@ class MainClockListAdapter(var ctx: Context, var resource: Int, var items: Array
         with(view.findViewById<TextView>(R.id.row_main_day)) {
             if (settingShowDay) {
                 text = formatterDay.format(Calendar.getInstance().timeInMillis + items[position].delay)
-                visibility = View.VISIBLE
-            } else {
-                visibility = View.GONE
             }
+            visibility = visibleTransform(settingShowDay)
         }
 
         return view

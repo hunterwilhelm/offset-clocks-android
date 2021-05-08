@@ -11,7 +11,7 @@ import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.edit_dialog.view.*
 import java.util.*
 
-
+// This is the pop up that allows you to name or rename your clocks
 class EditDialog(private val clockName: String?) : DialogFragment() {
 
     companion object {
