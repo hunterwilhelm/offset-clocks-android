@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Offset Clocks</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_24_hour_time">24 hour time</string>
+    <string name="action_show_day">Show Date</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
@@ -31,6 +32,8 @@
     <string name="clock_name">Clock Name</string>
     <string name="preference_key_clock_storage">clock_storage</string>
     <string name="preference_key_clocks">clocks</string>
+    <string name="preference_key_setting_24_hour">setting.24.hour</string>
+    <string name="preference_key_setting_show_day">setting.show.day</string>
     <string name="save">Save</string>
     <string name="defualt_clock_name">Your Phone\'s Time</string>
 </resources>

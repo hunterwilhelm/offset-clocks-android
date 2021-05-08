@@ -15,7 +15,11 @@ class MainClockListAdapter(var ctx: Context, var resource: Int, var items: Array
     ArrayAdapter<ClockModel>(ctx, resource, items) {
 
 
+    private var setting24HourTime: Boolean = false
+    private var settingShowDay: Boolean = false
     private val formatter: SimpleDateFormat = SimpleDateFormat("hh:mm:ss a", Locale.getDefault())
+    private val formatter24: SimpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+    private val formatterDay: SimpleDateFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val layoutInflater = LayoutInflater.from(ctx)
@@ -27,6 +31,14 @@ class MainClockListAdapter(var ctx: Context, var resource: Int, var items: Array
 
         name.text = items[position].Name
         time.text = items[position].CurrentTime
+        with(view.findViewById<TextView>(R.id.row_main_day)) {
+            if (settingShowDay) {
+                text = formatterDay.format(Calendar.getInstance().timeInMillis + items[position].delay)
+                visibility = View.VISIBLE
+            } else {
+                visibility = View.GONE
+            }
+        }
 
         return view
     }
@@ -34,8 +46,9 @@ class MainClockListAdapter(var ctx: Context, var resource: Int, var items: Array
     fun update() {
         val timeInMillis: Long = Calendar.getInstance().timeInMillis
         var needToNotifyFlag = false
+        val currentFormatter = if (setting24HourTime) formatter24 else formatter
         items.forEach {
-            val timeStr = formatter.format(Date(timeInMillis + it.delay))
+            val timeStr = currentFormatter.format(Date(timeInMillis + it.delay))
             if (timeStr != it.CurrentTime) {
                 it.CurrentTime = timeStr
                 needToNotifyFlag = true
@@ -45,6 +58,14 @@ class MainClockListAdapter(var ctx: Context, var resource: Int, var items: Array
             (ctx as Activity).runOnUiThread {
                 notifyDataSetChanged()
             }
+        }
+    }
+
+    fun updateSettings(_setting24HourTime: Boolean, _settingShowDay: Boolean) {
+        setting24HourTime = _setting24HourTime
+        settingShowDay = _settingShowDay
+        (ctx as Activity).runOnUiThread {
+            notifyDataSetChanged()
         }
     }
 }

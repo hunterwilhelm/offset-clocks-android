@@ -4,5 +4,4 @@ data class ClockModel(
     val Name: String,
     var CurrentTime: String,
     val delay: Long,
-    val isSeekBarNegative: Boolean
 )

@@ -12,8 +12,7 @@ import kotlinx.android.synthetic.main.edit_dialog.view.*
 import java.util.*
 
 
-class EditDialog(clockName: String?) : DialogFragment() {
-    private val clockName = clockName
+class EditDialog(private val clockName: String?) : DialogFragment() {
 
     companion object {
 

@@ -34,5 +34,23 @@ class Utils {
                 apply()
             }
         }
+
+        fun getBooleanPreference(
+            sPref: SharedPreferences,
+            key: String
+        ): Boolean {
+            return sPref.getBoolean(key, false)
+        }
+
+        fun setBooleanPreference(
+            sPref: SharedPreferences,
+            key: String,
+            value: Boolean
+        ) {
+            with(sPref.edit()) {
+                putBoolean(key, value)
+                apply()
+            }
+        }
     }
 }

@@ -3,8 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.hunterwilhelm.offsetclocks.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_show_day"
+        android:checkable="true"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/action_show_day"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_24_hour_time"
+        android:checkable="true"
+        android:orderInCategory="50"
+        android:title="@string/action_24_hour_time"
         app:showAsAction="never" />
 </menu>

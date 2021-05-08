@@ -1,8 +1,11 @@
 package com.hunterwilhelm.offsetclocks
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
@@ -26,6 +29,8 @@ class EditActivity : AppCompatActivity() {
         return if (visible) View.VISIBLE else View.GONE
     }
 
+    private var setting24HourTime: Boolean = false
+    private lateinit var timerTask: TimerTask
     private var fabButtonDisabled: Boolean = false
     private var currentDelay: Long = 0
     private var superFineDelay: Long = 0
@@ -54,6 +59,11 @@ class EditActivity : AppCompatActivity() {
 
     }
 
+    override fun onDestroy() {
+        timerTask.cancel()
+        super.onDestroy()
+    }
+
     private fun loadVariables() {
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         sPrefs = applicationContext.getSharedPreferences(
@@ -70,13 +80,11 @@ class EditActivity : AppCompatActivity() {
                 val name: String = bundle.get(IntentExtraConstants.CLOCK_NAME.name) as String
                 val index: Int = bundle.get(IntentExtraConstants.CLOCK_INDEX.name) as Int
                 val delay: Long = bundle.get(IntentExtraConstants.CLOCK_DELAY.name) as Long
-                val negative: Boolean =
-                    bundle.get(IntentExtraConstants.CLOCK_NEGATIVE.name) as Boolean
-
+                setting24HourTime = bundle.get(IntentExtraConstants.SETTING_24_HOUR.name) as Boolean
                 clockName = name
                 clockIndex = index
                 // preserve the original position of the seek bar
-                superFineDelay = delay % 1000 + if (negative) -1000 else 0
+                superFineDelay = delay % 1000
                 currentDelay = delay - superFineDelay
                 updateInfo()
             } catch (e: TypeCastException) {
@@ -87,10 +95,13 @@ class EditActivity : AppCompatActivity() {
     }
 
     private fun updateInfo() {
-        findViewById<SeekBar>(R.id.edit_seek_bar).progress = (superFineDelay + 1000).toInt()
+        val progress = (superFineDelay / 10 + 100).toInt()
+        findViewById<SeekBar>(R.id.edit_seek_bar).progress = progress
         findViewById<TextView>(R.id.edit_clock_title).text = clockName
         findViewById<LinearLayout>(R.id.edit_clock_title_container).visibility =
             visibleTransform(true)
+        val spannable = getSpannableSeekLabel(progress)
+        findViewById<TextView>(R.id.edit_fine_tune_text).text = spannable
     }
 
     private fun registerObservers() {
@@ -102,7 +113,7 @@ class EditActivity : AppCompatActivity() {
 
     private fun storeClock(it: String) {
         val clocks = Utils.getClocksFromStorage(sPrefs, clockKey)
-        val clock = ClockModel(it, "", currentDelay + superFineDelay, superFineDelay < 0)
+        val clock = ClockModel(it, "", currentDelay + superFineDelay)
         val i = clockIndex
         if (i != null) {
             clocks[i] = clock
@@ -124,8 +135,9 @@ class EditActivity : AppCompatActivity() {
     private fun registerTimers() {
         val self = this
         val clockText = findViewById<TextView>(R.id.edit_clock_text)
-        val formatter = SimpleDateFormat("hh:mm:ss a", Locale.getDefault())
-        Timer().scheduleAtFixedRate(object : TimerTask() {
+        val pattern = if (setting24HourTime) "HH:mm:ss" else "hh:mm:ss a"
+        val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+        timerTask = object : TimerTask() {
             override fun run() {
 
                 // performance improvement
@@ -142,7 +154,9 @@ class EditActivity : AppCompatActivity() {
                     val newTimeText = formatter.format(Date(clockTime))
 
                     // this prevents the app from having to do a refresh unless the text is different
-                    if (currentDelayUpdatedFlag || clockText.text.toString() != newTimeText) {
+                    val text = clockText.text.toString()
+                    val changed: Boolean = text != newTimeText
+                    if (currentDelayUpdatedFlag || changed) {
                         val (start, end) = when (editMode) {
                             EditMode.HOUR -> Pair(0, 2)
                             EditMode.MINUTE -> Pair(3, 5)
@@ -155,15 +169,31 @@ class EditActivity : AppCompatActivity() {
                             end,
                             Spannable.SPAN_EXCLUSIVE_INCLUSIVE
                         )
-                        clockText.text = spannable
+                        runOnUiThread {
+                            clockText.text = spannable
+                        }
+                    }
+                    if (changed && text.count() != 0) {
+                        vibrate()
                     }
                 }
             }
-        }, 0, 50)
+        }
+        Timer().scheduleAtFixedRate(timerTask, 0, 50)
 
         findViewById<FloatingActionButton>(R.id.edit_fab).setOnClickListener {
             fabButtonDisabled = true
             EditDialog(clockName).show(supportFragmentManager, EditDialog.TAG)
+        }
+    }
+
+    private fun vibrate() {
+        val vibrator: Vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(10, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(10)
         }
     }
 
@@ -219,18 +249,7 @@ class EditActivity : AppCompatActivity() {
                 progress: Int,
                 fromUser: Boolean
             ) {
-                superFineDelay = progress.toLong() - 1000
-                currentDelayUpdatedFlag = true
-
-                val prefix = resources.getString(R.string.fine_tune_seconds)
-                val seconds = "%.2f".format(superFineDelay / 1000F)
-                val spannable = SpannableString("$prefix: $seconds seconds")
-                spannable.setSpan(
-                    UnderlineSpan(),
-                    prefix.length + 2,
-                    spannable.length,
-                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE
-                )
+                val spannable = getSpannableSeekLabel(progress)
                 findViewById<TextView>(R.id.edit_fine_tune_text).text = spannable
             }
 
@@ -242,6 +261,22 @@ class EditActivity : AppCompatActivity() {
         })
 
 
+    }
+
+    private fun getSpannableSeekLabel(progress: Int): SpannableString {
+        superFineDelay = (progress.toLong() - 100) * 10
+        currentDelayUpdatedFlag = true
+
+        val prefix = resources.getString(R.string.fine_tune_seconds)
+        val seconds = "%.2f".format(superFineDelay / 1000F)
+        val spannable = SpannableString("$prefix: $seconds seconds")
+        spannable.setSpan(
+            UnderlineSpan(),
+            prefix.length + 2,
+            spannable.length,
+            Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+        )
+        return spannable
     }
 
 // play mode

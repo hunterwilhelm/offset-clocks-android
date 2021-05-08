@@ -9,4 +9,10 @@ class SharedViewModel : ViewModel() {
     fun sendName(text: String) {
         name.value = text
     }
+
+    val preferenceShowDay = MutableLiveData<Boolean>()
+
+    fun sendShowDayPreference(value: Boolean) {
+        preferenceShowDay.value = value
+    }
 }
