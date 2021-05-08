@@ -1,5 +1,6 @@
 package com.hunterwilhelm.offsetclocks
 
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
@@ -13,8 +14,12 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashSet
 
 
 class EditActivity : AppCompatActivity() {
@@ -23,12 +28,14 @@ class EditActivity : AppCompatActivity() {
         return if (visible) View.VISIBLE else View.GONE
     }
 
+    private var fabButtonDisabled: Boolean = false
     private var currentDelay: Long = 0
     private var superFineDelay: Long = 0
     private var editMode: EditMode = EditMode.SECOND
     private var playMode: PlayMode = PlayMode.PLAY
     private var pauseTime: Long = 0
     private var currentDelayUpdatedFlag: Boolean = false
+    private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +43,40 @@ class EditActivity : AppCompatActivity() {
 
         registerListeners()
         registerTimers()
+        registerObservers()
+
+    }
+
+    private fun registerObservers() {
+        sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        val sPref = applicationContext.getSharedPreferences(
+            getString(R.string.preference_key_clock_storage),
+            MODE_PRIVATE
+        )
+        val clockKey = getString(R.string.preference_key_clocks)
+
+        sharedViewModel.name.observe(this, {
+            storeClock(sPref, clockKey, it)
+            onBackPressed()
+        })
+    }
+
+    private fun storeClock(
+        sPref: SharedPreferences,
+        clockKey: String,
+        it: String
+    ) {
+        val hs: HashSet<String> =
+            sPref.getStringSet(clockKey, HashSet<String>()) as HashSet<String>
+        val clockJsonSet = HashSet<String>(hs)
+        val clock = ClockModel(it, "", currentDelay + superFineDelay, superFineDelay < 0)
+        val clockJson = Gson().toJson(clock)
+
+        clockJsonSet.add(clockJson)
+        with(sPref.edit()) {
+            putStringSet(clockKey, clockJsonSet)
+            apply()
+        }
     }
 
     private fun registerTimers() {
@@ -48,7 +89,8 @@ class EditActivity : AppCompatActivity() {
                 // performance improvement
                 if (currentDelayUpdatedFlag || self.playMode == PlayMode.PLAY) {
                     val currentTime = Calendar.getInstance().timeInMillis
-                    var clockTime = currentTime + self.currentDelay + self.superFineDelay
+                    var clockTime =
+                        currentTime + self.currentDelay + self.superFineDelay
 
                     // pauses clock time when paused
                     if (self.playMode == PlayMode.PAUSE) {
@@ -76,6 +118,11 @@ class EditActivity : AppCompatActivity() {
                 }
             }
         }, 0, 50)
+
+        findViewById<FloatingActionButton>(R.id.edit_fab).setOnClickListener {
+            fabButtonDisabled = true
+            EditDialog().show(supportFragmentManager, EditDialog.TAG)
+        }
     }
 
     private fun registerListeners() {
@@ -125,7 +172,11 @@ class EditActivity : AppCompatActivity() {
 
         findViewById<SeekBar>(R.id.edit_seek_bar).setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
+            override fun onProgressChanged(
+                seek: SeekBar,
+                progress: Int,
+                fromUser: Boolean
+            ) {
                 superFineDelay = progress.toLong() - 1000
                 currentDelayUpdatedFlag = true
 
@@ -151,7 +202,7 @@ class EditActivity : AppCompatActivity() {
 
     }
 
-    // play mode
+// play mode
 
     enum class PlayMode {
         PAUSE,
@@ -172,7 +223,7 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
-    // edit mode
+// edit mode
 
     enum class EditMode {
         HOUR,
@@ -223,6 +274,11 @@ class EditActivity : AppCompatActivity() {
     private fun updateBlocks() {
         findViewById<LinearLayout>(R.id.edit_fine_tune_container).visibility =
             visibleTransform(editMode == EditMode.SECOND)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fabButtonDisabled = false
     }
 
     override fun onBackPressed() {

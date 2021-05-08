@@ -11,8 +11,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MyCustomAdapter(var ctx: Context, var resource: Int, var items: ArrayList<Model>) :
-    ArrayAdapter<Model>(ctx, resource, items) {
+class MyCustomAdapter(var ctx: Context, var resource: Int, var items: ArrayList<ClockModel>) :
+    ArrayAdapter<ClockModel>(ctx, resource, items) {
 
 
     private val formatter: SimpleDateFormat = SimpleDateFormat("hh:mm:ss a", Locale.getDefault())
@@ -33,12 +33,18 @@ class MyCustomAdapter(var ctx: Context, var resource: Int, var items: ArrayList<
 
     fun update() {
         val timeInMillis: Long = Calendar.getInstance().timeInMillis
+        var needToNotifyFlag = false
         this.items.forEach {
-            val time = Date(timeInMillis + it.delay)
-            it.CurrentTime = formatter.format(time)
+            val timeStr = formatter.format(Date(timeInMillis + it.delay))
+            if (timeStr != it.CurrentTime) {
+                it.CurrentTime = timeStr
+                needToNotifyFlag = true
+            }
         }
-        (ctx as Activity).runOnUiThread {
-            notifyDataSetChanged()
+        if (needToNotifyFlag) {
+            (ctx as Activity).runOnUiThread {
+                notifyDataSetChanged()
+            }
         }
     }
 }

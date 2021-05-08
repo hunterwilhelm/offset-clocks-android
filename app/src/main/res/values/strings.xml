@@ -28,4 +28,8 @@
     <string name="plus_six">+6</string>
     <string name="minus_one">-1</string>
     <string name="plus_one">+1</string>
+    <string name="clock_name">Clock Name</string>
+    <string name="preference_key_clock_storage">clock_storage</string>
+    <string name="preference_key_clocks">clocks</string>
+    <string name="save">Save</string>
 </resources>

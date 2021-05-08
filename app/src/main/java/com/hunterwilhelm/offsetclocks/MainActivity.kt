@@ -1,25 +1,26 @@
 package com.hunterwilhelm.offsetclocks
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 
 class MainActivity : AppCompatActivity() {
 
+    private var fabButtonDisabled: Boolean = false
     private lateinit var myAdapter: MyCustomAdapter
-    private lateinit var mHandlerThread: HandlerThread
-    private lateinit var timerHandler: Handler
-    private lateinit var doUpdateTimeout: Runnable
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,39 +28,71 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.main_toolbar)
         setSupportActionBar(toolbar)
 
-
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
-            addClock()
-        }
-
-        val items = ArrayList<Model>()
-        items.add(Model("Actual", "010:00:00AM", 0))
-        items.add(Model("System", "010:00:00AM", 1000))
+        val items = ArrayList<ClockModel>()
+        items.add(ClockModel("Your Phone's Time", "", 0, false))
         val listView = findViewById<NonScrollListView>(R.id.nonscroll_list)
         this.myAdapter = MyCustomAdapter(this, R.layout.row_main, items)
         listView.adapter = myAdapter
 
+        sharedPreferences = applicationContext.getSharedPreferences(
+            getString(R.string.preference_key_clock_storage),
+            MODE_PRIVATE
+        )
 
         // setup for timer
-        this.doUpdateTimeout = Runnable { myAdapter.notifyDataSetChanged() }
-        mHandlerThread = HandlerThread("my-handler")
-        mHandlerThread.start()
-        timerHandler = Handler(mHandlerThread.looper)
-
-        val timer = Timer()
-        val tick = UpdateClass(myAdapter)
-
-        timer.scheduleAtFixedRate(tick, 0, 100)
+        registerTimers()
+        registerListeners()
     }
 
-    private class UpdateClass(var myCustomAdapter: MyCustomAdapter) : TimerTask() {
+    private fun registerTimers() {
+        Timer().scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                myAdapter.update()
+            }
+        }, 0, 50)
+    }
 
-        override fun run() {
-            myCustomAdapter.update()
+    private fun registerListeners() {
+        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
+            fabButtonDisabled = true
+            addClock()
         }
-
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadData()
+        fabButtonDisabled = false
+    }
+
+    private fun loadData() {
+        val clockKey = getString(R.string.preference_key_clocks)
+
+        val hs: HashSet<String> =
+            sharedPreferences.getStringSet(clockKey, HashSet()) as HashSet<String>
+        myAdapter.clear()
+        val gson = Gson()
+        if (hs.count() == 0) {
+            val clock = ClockModel("Your Phone's Time", "", 0, false)
+            myAdapter.add(clock)
+            with(sharedPreferences.edit()) {
+                val set = HashSet<String>()
+                set.add(gson.toJson(clock))
+                putStringSet(clockKey, set)
+                apply()
+            }
+        } else {
+            hs.forEach {
+                try {
+                    val clock = gson.fromJson(it, ClockModel::class.java)
+                    myAdapter.add(clock)
+                } catch (e: JsonSyntaxException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+        myAdapter.notifyDataSetChanged()
+    }
 
     private fun addClock() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
