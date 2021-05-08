@@ -17,6 +17,7 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.SimpleDateFormat
@@ -105,7 +106,7 @@ class EditActivity : AppCompatActivity() {
     }
 
     private fun registerObservers() {
-        sharedViewModel.name.observe(this, {
+        sharedViewModel.name.observe(this, Observer<String> {
             storeClock(it)
             onBackPressed()
         })
