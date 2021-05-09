@@ -24,7 +24,8 @@ Now, you can sync any clock from around the house. From your microwave clock, to
 
 #### Demonstration / Tutorial
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video (YouTube)](https://youtu.be/m54dOq_PAHY)
+[Software Demo Video (Loom)](https://www.loom.com/share/33c51169d49d469fb5e72efa1b291f25)
 
 # Development Environment
 
